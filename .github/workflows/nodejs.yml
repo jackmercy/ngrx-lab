@@ -20,6 +20,6 @@ jobs:
     - name: npm install, build
       run: |
         npm install
-        npm run build
+        ng build
       env:
         CI: true
