@@ -1,0 +1,39 @@
+<div class="content" role="article">
+    <div class="row create-hero-row">
+        <div class="col">
+            <h2>Add Hero</h2>
+        </div>
+        <div class="col-5">
+            <button (click)="createHero()" class="create-hero-button" mat-icon-button>
+                <mat-icon>playlist_add</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="card-container">
+        <div *ngFor="let hero of heroList; let i = index">
+            <div class="card card-row" [tabindex]="i">
+                <div class="col hero-detail">
+                    <div class="row">
+                        <div class="col-2">
+                            <img [src]="hero.avatar" class="avatar-hero">
+                        </div>
+                        <div class="col">
+                            <div class="row">{{ hero.name }}</div>
+                            <div class="row">{{ hero.power }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <button mat-icon-button>
+                        <mat-icon>create</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="deleteHero(hero.id)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
