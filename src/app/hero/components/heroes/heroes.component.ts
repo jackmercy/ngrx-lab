@@ -3,6 +3,8 @@ import { IHero } from '../../interface/hero.interface';
 import { Router } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { HeroService } from '../../services/hero.service';
+import { MatDialog } from '@angular/material';
+import { UpdateComponent } from '../update/update.component';
 // import { Observable } from 'rxjs';
 
 @Component({
@@ -32,7 +34,7 @@ export class HeroesComponent implements OnInit {
 
     constructor(
         private _router: Router,
-        private _afs: AngularFirestore,
+        public dialog: MatDialog,
         private _heroService: HeroService
     ) { }
 
@@ -48,8 +50,14 @@ export class HeroesComponent implements OnInit {
         // });
     }
 
-    updateHero(index: number): void {
-        console.log(`index is ${index}`);
+    updateHero(hero: IHero): void {
+        this.dialog.open(UpdateComponent, {
+            autoFocus: false,
+            restoreFocus: false,
+            data: hero,
+            height: '400px',
+            width: '780px'
+        })
     }
 
     deleteHero(__id: string): void {

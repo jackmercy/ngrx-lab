@@ -1,5 +1,48 @@
 <div class="content">
-    <form [formGroup]="" autocomplete="off">
+    <form [formGroup]="updateHeroForm" class="w-100" autocomplete="off">
+        <div class="row justify-content-center">
+            <div class="col-4 text-center">
+                <img [src]="avatar.value" class="preview-avatar">
+            </div>
 
+            <div class="col">
+                <!-- Name -->
+                <div class="row">
+                    <mat-form-field class="w-100" appearance="standard">
+                        <mat-label id="label-first-name">Name</mat-label>
+                        <input matInput formControlName="name" required>
+                        <mat-error *ngIf="name.invalid">
+                            Mandatory information
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- Power -->
+                <div class="row">
+                    <mat-form-field class="w-100" appearance="standard">
+                        <mat-label id="label-first-name">Power</mat-label>
+                        <input matInput formControlName="power" required>
+                        <mat-error *ngIf="power.invalid">
+                            Mandatory information
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- Avatar -->
+                <div class="row">
+                    <mat-form-field class="w-100" appearance="standard">
+                        <mat-label id="label-first-name">Avatar</mat-label>
+                        <input matInput formControlName="avatar">
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-end">
+            <button class="hero-button mt-2" (click)="goBackButtonClicked()" mat-flat-button color="warn">
+                Go back
+            </button>
+            <button class="hero-button mt-2" (click)="updateHeroClicked()" mat-stroked-button color="primary">
+                Update
+            </button>
+        </div>
     </form>
 </div>

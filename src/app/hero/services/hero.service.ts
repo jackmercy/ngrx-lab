@@ -13,20 +13,28 @@ export class HeroService {
         private _afs: AngularFirestore
     ) { }
 
-    createHero(__payload: any) {
-        console.log(__payload);
+    createHero(__payload: any): Observable<any> {
         const _id = this._afs.createId();
-        const _hero = { ...__payload, id: _id  };
-        this._afs.collection('hero').doc(_id).set(_hero);
+        const _hero = { ...__payload, id: _id };
+        return of(this._afs.collection('hero').doc(_id).set(_hero));
     }
 
     readHero(): Observable<any> {
         return this._afs.collection('hero').snapshotChanges().pipe(
-            map( (snap: any) => _.forEach(snap, (element: any) => element.payload.doc.data()))
+            map(
+                (snap: any) => _.forEach(snap,
+                    (element: any, key: number) => snap[key] = element.payload.doc.data()
+                )
+            )
         );
+    }
+
+    updateHero(hero: IHero): Observable<any> {
+        return of(this._afs.collection('hero').doc(hero.id).update(hero));
     }
 
     deleteHero(__id: string): Observable<any> {
         return of(this._afs.collection('hero').doc(__id).delete());
     }
+
 }

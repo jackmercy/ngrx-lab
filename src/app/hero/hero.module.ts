@@ -24,6 +24,9 @@ import { HeroService } from './services/hero.service';
     ],
     providers: [
         HeroService
+    ],
+    entryComponents: [
+        UpdateComponent
     ]
 })
 export class HeroModule { }

@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HeroService } from '../../services/hero.service';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-create',
@@ -15,17 +13,13 @@ export class CreateComponent implements OnInit {
     public createHeroForm: FormGroup;
     public previewAvatar: string;
 
-    items: Observable<any>;
-
     constructor(
         private _formBuilder: FormBuilder,
         private _router: Router,
         private _heroService: HeroService,
-        private _afs: AngularFirestore,
     ) {}
 
     ngOnInit() {
-        this.items = this._afs.collection('hero').valueChanges();
         this.createHeroForm = this._formBuilder.group({
             name: ['', Validators.required],
             power: ['', Validators.required],
@@ -37,18 +31,6 @@ export class CreateComponent implements OnInit {
         this.avatar.valueChanges.subscribe(
             imageSrc => this.previewAvatar = imageSrc
         );
-    }
-
-    get name() {
-        return this.createHeroForm.get('name');
-    }
-
-    get power() {
-        return this.createHeroForm.get('power');
-    }
-
-    get avatar() {
-        return this.createHeroForm.get('avatar');
     }
 
     goBackButtonClicked(): void {
@@ -64,7 +46,20 @@ export class CreateComponent implements OnInit {
             };
 
             this._heroService.createHero(payload);
+            this._router.navigate(['/hero/list']);
         }
+    }
+
+    get name() {
+        return this.createHeroForm.get('name');
+    }
+
+    get power() {
+        return this.createHeroForm.get('power');
+    }
+
+    get avatar() {
+        return this.createHeroForm.get('avatar');
     }
 
 }
