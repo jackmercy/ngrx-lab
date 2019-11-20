@@ -1,5 +1,7 @@
 # NgrxLab
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a7a780c9-9c5a-4338-8cae-ac972bd03012/deploy-status)](https://app.netlify.com/sites/ngrx-heroes/deploys)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.19.
 
 ## Development server
