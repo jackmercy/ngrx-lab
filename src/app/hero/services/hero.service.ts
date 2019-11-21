@@ -9,9 +9,6 @@ import * as _ from 'lodash';
 })
 export class HeroService {
     herosCollection: AngularFirestoreCollection<IHero>;
-    // this.herosCollection.snapshotChanges().subscribe(snapshot => {
-    //     this.heroList = snapshot;
-    // });
     constructor(
         private _afs: AngularFirestore
     ) {
