@@ -1,15 +1,36 @@
 <div class="content" role="article">
+    <!-- Create HERO -->
     <div class="row create-hero-row">
-        <div class="col">
+        <div class="col pl-5 pr-0">
             <h2>Add Hero</h2>
         </div>
-        <div class="col-5">
+        <div class="col-3 pr-5 pl-0">
             <button (click)="createHero()" class="create-hero-button" mat-icon-button>
                 <mat-icon>playlist_add</mat-icon>
             </button>
         </div>
     </div>
-    <div class="card-container">
+    <!-- Create HERO -->
+
+    <!-- Search HERO -->
+    <div class="row search-hero">
+        <div class="col w-100">
+            <form>
+                <mat-form-field class="w-100">
+                    <input #searchHeroInput matInput [formControl]="searchFormControl" placeholder="Search...">
+                    <button mat-button [ngClass]="{invisible: searchFormControl.value === ''}" matSuffix mat-icon-button aria-label="Clear"
+                        (click)="clearSearchBar()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+            </form>
+        </div>
+    </div>
+    <!-- Search HERO -->
+
+    <!-- Hero list -->
+    <div class="card-container" *ngIf="heroList && heroList.length > 0">
         <div *ngFor="let hero of heroList; let i = index">
             <div class="card card-row" [tabindex]="i">
                 <div class="col hero-detail">
@@ -36,4 +57,10 @@
         </div>
 
     </div>
+
+    <div class="card-container" *ngIf="!heroList">
+        <h2>No Heroes Found</h2>
+    </div>
+
+    <!-- Hero list -->
 </div>

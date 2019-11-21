@@ -4,8 +4,9 @@ import { GettingStartedContentComponent } from './getting-started-content.compon
 
 const routes: Routes = [
     {
-        path: '', component: GettingStartedContentComponent,
+        path: 'welcome', component: GettingStartedContentComponent
     },
+    { path: '', redirectTo: 'welcome', pathMatch: 'full' },
     { path: 'hero', loadChildren: () => import('./hero/hero.module').then(module => module.HeroModule) }
 ];
 

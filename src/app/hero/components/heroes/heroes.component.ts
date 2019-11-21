@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { IHero } from '../../interface/hero.interface';
 import { Router } from '@angular/router';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { HeroService } from '../../services/hero.service';
 import { MatDialog } from '@angular/material';
 import { UpdateComponent } from '../update/update.component';
 // import { Observable } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-heroes',
@@ -13,24 +14,10 @@ import { UpdateComponent } from '../update/update.component';
     styleUrls: ['./heroes.component.scss']
 })
 export class HeroesComponent implements OnInit {
+    value = '';
     defaultAvatar = 'https://material.angular.io/assets/img/examples/shiba1.jpg';
     heroList: IHero[];
-    // heroList: IHero[] = [
-    //     {
-    //         id: '1',
-    //         avatar: this.defaultAvatar,
-    //         name: 'T.A lớn',
-    //         power: 'Ăn shit'
-    //     },
-    //     {
-    //         id: '2',
-    //         avatar: this.defaultAvatar,
-    //         name: 'T.A nhỏ',
-    //         power: 'Linh vật debug'
-    //     }
-    // ];
-
-    // herosCollection: AngularFirestoreCollection<IHero>;
+    searchFormControl: FormControl;
 
     constructor(
         private _router: Router,
@@ -39,16 +26,21 @@ export class HeroesComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        // this.herosCollection = this._afs.collection<IHero>('hero');
+        this.searchFormControl = new FormControl('');
 
         this._heroService.readHero().subscribe(
             (heroes: IHero[]) => this.heroList = heroes
         );
 
-        // this.herosCollection.snapshotChanges().subscribe(snapshot => {
-        //     this.heroList = snapshot;
-        // });
+        this.searchFormControl.valueChanges.pipe(
+            debounceTime(1000),
+            distinctUntilChanged(),
+            switchMap(term => this._heroService.searchHero(term))
+        ).subscribe(
+            (_heroes: any) => this.heroList = _heroes
+        );
     }
+
 
     updateHero(hero: IHero): void {
         this.dialog.open(UpdateComponent, {
@@ -57,7 +49,7 @@ export class HeroesComponent implements OnInit {
             data: hero,
             height: '400px',
             width: '780px'
-        })
+        });
     }
 
     deleteHero(__id: string): void {
@@ -66,6 +58,10 @@ export class HeroesComponent implements OnInit {
 
     createHero(): void {
         this._router.navigate(['hero/create']);
+    }
+
+    clearSearchBar(): void {
+        this.searchFormControl.setValue('');
     }
 
 }
