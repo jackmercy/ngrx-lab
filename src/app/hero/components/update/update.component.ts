@@ -1,11 +1,15 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { HeroService } from '../../services/hero.service';
 import { IHero } from '../../interface/hero.interface';
 import * as _ from 'lodash';
-import { BehaviorSubject } from 'rxjs';
+/* NgRx */
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/state/hero.state';
+import * as heroActions from '../../store/actions/hero.actions';
+import * as heroSelectors from '../../store/selectors/hero.selector';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 const handlerBeforeUnload = (ev: any) => {
     // Cancel the event
@@ -14,53 +18,48 @@ const handlerBeforeUnload = (ev: any) => {
     ev.returnValue = 'refresh event';
 };
 
+const defaultAvatar = 'https://material.angular.io/assets/img/examples/shiba1.jpg';
+
 @Component({
     selector: 'app-update',
     templateUrl: './update.component.html',
     styleUrls: ['./update.component.scss']
 })
 export class UpdateComponent implements OnInit, OnDestroy {
-    defaultAvatar = 'https://material.angular.io/assets/img/examples/shiba1.jpg';
-    public updateHeroForm: FormGroup;
 
-    public isDirty = new BehaviorSubject<boolean>(false);
-    private originalHeroData: any;
+    public updateHeroForm: FormGroup;
+    private ngRxDestroy$ = new Subject();
 
     constructor(
         private _formBuilder: FormBuilder,
-        private _heroService: HeroService,
+        private _store: Store<State>,
         private _dialogRef: MatDialogRef<UpdateComponent>,
         @Inject(MAT_DIALOG_DATA) public data: IHero
     ) { }
 
     ngOnInit() {
         this.updateHeroForm = this._formBuilder.group({
+            id: [this.data.id],
             name: [this.data.name, Validators.required],
             power: [this.data.power, Validators.required],
             avatar: [this.data.avatar]
         });
 
-        this.originalHeroData = {
-            name: this.data.name,
-            power: this.data.power,
-            avatar: this.data.avatar
-        };
-
         this.updateHeroForm.valueChanges.subscribe(
-            newValue => !_.isEqual(this.originalHeroData, newValue) ? this.isDirty.next(true) : this.isDirty.next(false)
+            newValue => !_.isEqual(this.data, newValue) ?
+                this._store.dispatch(heroActions.changeDirtyState({ payload: true })) :
+                this._store.dispatch(heroActions.changeDirtyState({ payload: false }))
         );
 
-        this.isDirty.subscribe(__isDirty => {
-            if (__isDirty) {
-                return window.addEventListener('beforeunload', handlerBeforeUnload);
-            } else {
-                return window.removeEventListener('beforeunload', handlerBeforeUnload);
-            }
-        });
+        this._store.select(heroSelectors.isUpdateHeroSUCCESS).pipe(takeUntil(this.ngRxDestroy$)).subscribe(
+            (isSuccess: boolean) => isSuccess ? this._dialogRef.close() : null
+        );
     }
 
     ngOnDestroy() {
-        window.removeEventListener('beforeunload', handlerBeforeUnload);
+        this._store.dispatch(heroActions.changeDirtyState({ payload: false }));
+
+        this.ngRxDestroy$.next();
     }
 
 
@@ -69,12 +68,12 @@ export class UpdateComponent implements OnInit, OnDestroy {
     }
 
     updateHeroClicked(): void {
-        this._heroService.updateHero({
-            ...this.updateHeroForm.getRawValue(),
-            id: this.data.id
-        });
+        const _payload = this.updateHeroForm.getRawValue();
+        if (!_payload.avatar) {
+            _payload.avatar = defaultAvatar;
+        }
 
-        this._dialogRef.close();
+        this._store.dispatch(heroActions.updateHero({ payload: _payload }));
     }
 
     get name() {

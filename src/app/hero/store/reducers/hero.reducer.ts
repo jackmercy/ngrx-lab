@@ -4,19 +4,148 @@ import { HeroState } from '../state/hero.state';
 
 
 export const initialState: HeroState = {
-    heroes: [{
-        id: null,
-        name: '',
-        power: '',
-        avatar: ''
-    }],
+    heroes: [],
 
-    prevAction: ''
+    prevAction: '',
+    formDirty: false,
+
+    apiSuccess: false,
+    successResponse: null,
+    errorResponse: null
 };
 
 const reducer = createReducer(
     initialState,
-    // on()
+    //#region Create Hero
+    on(
+        actions.createHero,
+        (state) => ({
+            ...state,
+            prevAction: actions.EHeroActions.createHero,
+            apiSuccess: false,
+            successResponse: null,
+            errorResponse: null
+        })
+    ),
+    on(
+        actions.createHeroSUCCESS,
+        (state, { payload }) => ({
+            ...state,
+            prevAction: actions.EHeroActions.createHero,
+            apiSuccess: true,
+            successResponse: payload,
+            errorResponse: null
+        })
+    ),
+    on(
+        actions.createHeroERROR,
+        (state, { payload }) => ({
+            ...state,
+            prevAction: actions.EHeroActions.createHero,
+            apiSuccess: false,
+            successResponse: null,
+            errorResponse: payload
+        })
+    ),
+    //#endregion
+
+    //#region Read heroes
+    on(
+        actions.readHeroes,
+        (state) => ({
+            ...state,
+            prevAction: actions.EHeroActions.readHeroes,
+            apiSuccess: false,
+            successResponse: null,
+            errorResponse: null
+        })
+    ),
+    on(
+        actions.readHeroesSUCCESS,
+        (state, { payload }) => ({
+            ...state,
+            prevAction: actions.EHeroActions.readHeroes,
+            heroes: payload,
+            apiSuccess: true
+        })
+    ),
+    //#endregion
+
+    //#region Update hero
+    on(
+        actions.updateHero,
+        state => ({
+            ...state,
+            prevAction: actions.EHeroActions.updateHero,
+            apiSuccess: false,
+            successResponse: null,
+            errorResponse: null
+        })
+    ),
+    on(
+        actions.updateHeroSUCCESS,
+        (state, { payload }) => ({
+            ...state,
+            prevAction: actions.EHeroActions.updateHero,
+            apiSuccess: true,
+            successResponse: payload,
+            errorResponse: null
+        })
+    ),
+    //#endregion
+
+    //#region Delete hero
+    on(
+        actions.deleteHero,
+        state => ({
+            ...state,
+            prevAction: actions.EHeroActions.deleteHero,
+            apiSuccess: false,
+            successResponse: null,
+            errorResponse: null
+        })
+    ),
+    on(
+        actions.deleteHeroSUCCESS,
+        (state, { payload }) => ({
+            ...state,
+            prevAction: actions.EHeroActions.deleteHero,
+            apiSuccess: true,
+            successResponse: payload,
+            errorResponse: null
+        })
+    ),
+    //#endregion
+
+    //#region Search hero(es)
+    on(
+        actions.searchHeroes,
+        state => ({
+            ...state,
+            prevAction: actions.EHeroActions.searchHeroes,
+            apiSuccess: false,
+            successResponse: null,
+            errorResponse: null
+        })
+    ),
+    on(
+        actions.searchHeroesSUCCESS,
+        (state, { payload }) => ({
+            ...state,
+            prevAction: actions.EHeroActions.searchHeroes,
+            heroes: payload,
+            apiSuccess: true
+        })
+    ),
+    //#endregion
+    on(
+        actions.changeDirtyState,
+        (state, { payload }) => ({
+            ...state,
+            prevAction: actions.EHeroActions.changeDirtyState,
+            formDirty: payload
+        })
+    ),
 );
 
 export function heroReducer(state: HeroState | undefined, action: Action) {

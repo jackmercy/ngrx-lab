@@ -15,13 +15,16 @@ export class HeroService {
         this.herosCollection = this._afs.collection<IHero>('hero');
     }
 
-    createHero(__payload: any): Observable<any> {
+    createHero(__payload: IHero): Observable<any> {
         const _id = this._afs.createId();
-        const _hero = { ...__payload, id: _id };
+        const _hero = {
+            ...__payload,
+            id: _id
+        };
         return of(this.herosCollection.doc(_id).set(_hero));
     }
 
-    readHero(): Observable<any> {
+    readHero(): Observable<IHero[]> {
         return this.herosCollection.snapshotChanges().pipe(
             map(
                 (snap: any) => _.forEach(snap,
@@ -39,7 +42,7 @@ export class HeroService {
         return of(this.herosCollection.doc(__id).delete());
     }
 
-    searchHero(__query: string): Observable<any> {
+    searchHero(__query: string): Observable<IHero[]> {
         if (!__query) {
             return this.readHero();
         }

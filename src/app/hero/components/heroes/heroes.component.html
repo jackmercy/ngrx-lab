@@ -58,7 +58,7 @@
 
     </div>
 
-    <div class="card-container" *ngIf="!heroList">
+    <div class="card-container" *ngIf="heroList && heroList.length === 0">
         <h2>No Heroes Found</h2>
     </div>
 

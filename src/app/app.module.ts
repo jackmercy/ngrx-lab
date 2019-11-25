@@ -16,9 +16,9 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 
 /* Store */
-// import { StoreModule } from '@ngrx/store';
-// import { EffectsModule } from '@ngrx/effects';
-// import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 
 @NgModule({
@@ -42,12 +42,12 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
         AngularFireStorageModule,
 
         // @store
-        // StoreModule.forRoot({}),
-        // StoreDevtoolsModule.instrument({
-        //     name: 'NgRx Hero Devtools',
-        //     maxAge: 25,
-        // }),
-        // EffectsModule.forRoot([]),
+        StoreModule.forRoot({}),
+        StoreDevtoolsModule.instrument({
+            name: 'NgRx Hero Devtools',
+            maxAge: 25,
+        }),
+        EffectsModule.forRoot([]),
     ],
     providers: [],
     bootstrap: [AppComponent]

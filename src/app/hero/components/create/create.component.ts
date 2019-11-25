@@ -1,52 +1,65 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { HeroService } from '../../services/hero.service';
+import { IHero } from '../../interface/hero.interface';
+/* NgRx */
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/state/hero.state';
+import * as heroActions from '../../store/actions/hero.actions';
+import * as heroSelectors from '../../store/selectors/hero.selector';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
+const defaultAvatar = 'https://material.angular.io/assets/img/examples/shiba1.jpg';
 
 @Component({
     selector: 'app-create',
     templateUrl: './create.component.html',
     styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit {
-    defaultAvatar = 'https://material.angular.io/assets/img/examples/shiba1.jpg';
+export class CreateComponent implements OnInit, OnDestroy {
     public createHeroForm: FormGroup;
-    public previewAvatar: string;
+    public previewAvatar: string = defaultAvatar;
+    private ngRxDestroy$ = new Subject();
 
     constructor(
         private _formBuilder: FormBuilder,
-        private _router: Router,
-        private _heroService: HeroService,
-    ) {}
-
-    ngOnInit() {
+        private _store: Store<State>
+    ) {
         this.createHeroForm = this._formBuilder.group({
             name: ['', Validators.required],
             power: ['', Validators.required],
             avatar: ['']
         });
+    }
 
-        this.previewAvatar = this.defaultAvatar;
+    ngOnInit() {
+        this.avatar.valueChanges.pipe(takeUntil(this.ngRxDestroy$)).subscribe(
+            imageSrc => imageSrc ? this.previewAvatar = imageSrc : this.previewAvatar = defaultAvatar
+        );
 
-        this.avatar.valueChanges.subscribe(
-            imageSrc => this.previewAvatar = imageSrc
+        this._store.select(heroSelectors.isCreateHeroSUCCESS).pipe(takeUntil(this.ngRxDestroy$)).subscribe(
+            (isSuccess: boolean) => isSuccess ? this._store.dispatch(heroActions.navigateToPage({ payload: '/hero/list' })) : null
         );
     }
 
+    ngOnDestroy() {
+        this.ngRxDestroy$.next();
+    }
+
     goBackButtonClicked(): void {
-        this._router.navigate(['/hero/list']);
+        this._store.dispatch(heroActions.navigateToPage({ payload: '/hero/list' }));
     }
 
     createHeroClicked(): void {
         if (this.createHeroForm.valid) {
-            const payload = {
+            const _payload: IHero = {
+                id: '',
                 name: this.name.value,
                 power: this.power.value,
-                avatar: this.avatar.value ? this.avatar.value : this.defaultAvatar
+                avatar: this.avatar.value ? this.avatar.value : defaultAvatar
             };
 
-            this._heroService.createHero(payload);
-            this._router.navigate(['/hero/list']);
+            this._store.dispatch(heroActions.createHero({ payload:  _payload}));
         }
     }
 

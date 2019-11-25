@@ -11,10 +11,11 @@ import { CreateComponent } from './components/create/create.component';
 
 import { HeroService } from './services/hero.service';
 /* Ngrx */
-// import { StoreModule } from '@ngrx/store';
-// import { EffectsModule } from '@ngrx/effects';
-// import { EStateFeaturesName } from '../state/app.state';
-// import { reducers } from './store/reducers/index.reducer';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { EStateFeaturesName } from '../state/app.state';
+import { reducers } from './store/reducers/index.reducer';
+import { HeroEffects } from './store/effects/hero.effects';
 
 @NgModule({
     declarations: [
@@ -29,8 +30,8 @@ import { HeroService } from './services/hero.service';
         HeroRoutingModule,
 
         /* Ngrx */
-        // StoreModule.forFeature(EStateFeaturesName.heroModule, reducers),
-        // EffectsModule.forFeature([HeroEffects])
+        StoreModule.forFeature(EStateFeaturesName.heroModule, reducers),
+        EffectsModule.forFeature([HeroEffects])
     ],
     providers: [
         HeroService
