@@ -40,6 +40,7 @@ export class CreateComponent implements OnInit {
     createHeroClicked(): void {
         if (this.createHeroForm.valid) {
             const payload = {
+                id: '',
                 name: this.name.value,
                 power: this.power.value,
                 avatar: this.avatar.value ? this.avatar.value : this.defaultAvatar

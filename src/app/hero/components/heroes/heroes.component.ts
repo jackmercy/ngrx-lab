@@ -28,14 +28,14 @@ export class HeroesComponent implements OnInit {
     ngOnInit() {
         this.searchFormControl = new FormControl('');
 
-        this._heroService.readHero().subscribe(
+        this._heroService.readHeroes('').subscribe(
             (heroes: IHero[]) => this.heroList = heroes
         );
 
         this.searchFormControl.valueChanges.pipe(
             debounceTime(1000),
             distinctUntilChanged(),
-            switchMap(term => this._heroService.searchHero(term))
+            switchMap(term => this._heroService.readHeroes(term))
         ).subscribe(
             (_heroes: any) => this.heroList = _heroes
         );
