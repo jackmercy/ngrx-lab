@@ -49,27 +49,27 @@ const reducer = createReducer(
     ),
     //#endregion
 
-    //#region Read heroes
-    on(
-        actions.readHeroes,
-        (state) => ({
-            ...state,
-            prevAction: actions.EHeroActions.readHeroes,
-            apiSuccess: false,
-            successResponse: null,
-            errorResponse: null
-        })
-    ),
-    on(
-        actions.readHeroesSUCCESS,
-        (state, { payload }) => ({
-            ...state,
-            prevAction: actions.EHeroActions.readHeroes,
-            heroes: payload,
-            apiSuccess: true
-        })
-    ),
-    //#endregion
+        //#region Read hero(es)
+        on(
+            actions.readHeroes,
+            state => ({
+                ...state,
+                prevAction: actions.EHeroActions.readHeroes,
+                apiSuccess: false,
+                successResponse: null,
+                errorResponse: null
+            })
+        ),
+        on(
+            actions.readHeroesSUCCESS,
+            (state, { payload }) => ({
+                ...state,
+                prevAction: actions.EHeroActions.readHeroes,
+                heroes: payload,
+                apiSuccess: true
+            })
+        ),
+        //#endregion
 
     //#region Update hero
     on(
@@ -117,27 +117,6 @@ const reducer = createReducer(
     ),
     //#endregion
 
-    //#region Search hero(es)
-    on(
-        actions.searchHeroes,
-        state => ({
-            ...state,
-            prevAction: actions.EHeroActions.searchHeroes,
-            apiSuccess: false,
-            successResponse: null,
-            errorResponse: null
-        })
-    ),
-    on(
-        actions.searchHeroesSUCCESS,
-        (state, { payload }) => ({
-            ...state,
-            prevAction: actions.EHeroActions.searchHeroes,
-            heroes: payload,
-            apiSuccess: true
-        })
-    ),
-    //#endregion
     on(
         actions.changeDirtyState,
         (state, { payload }) => ({

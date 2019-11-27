@@ -15,10 +15,8 @@ import { takeUntil } from 'rxjs/operators';
     styleUrls: ['./heroes.component.scss']
 })
 export class HeroesComponent implements OnInit, OnDestroy {
-    value = '';
-    defaultAvatar = 'https://material.angular.io/assets/img/examples/shiba1.jpg';
     heroList: IHero[];
-    searchFormControl: FormControl;
+    searchFormControl: FormControl = new FormControl('');;
     private ngRxDestroy$ = new Subject();
 
     constructor(
@@ -26,16 +24,18 @@ export class HeroesComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.searchFormControl = new FormControl('');
-
-        this._store.dispatch(heroActions.readHeroes());
+        this._store.dispatch(heroActions.readHeroes({ payload: '' }));
 
         this._store.select(heroSelectors.selectHeroes).pipe(takeUntil(this.ngRxDestroy$)).subscribe(
             (_heroes: IHero[]) => _heroes ? this.heroList = _heroes : this.heroList = []
         );
 
-        this.searchFormControl.valueChanges.subscribe(
-            (query: string) => this._store.dispatch(heroActions.searchHeroes({ payload: query }))
+        this._store.select(heroSelectors.isDeleteHeroSUCCESS).pipe(takeUntil(this.ngRxDestroy$)).subscribe(
+            (isSuccess: boolean) => isSuccess ? this._store.dispatch(heroActions.readHeroes({ payload: '' })) : null
+        );
+
+        this.searchFormControl.valueChanges.pipe(takeUntil(this.ngRxDestroy$)).subscribe(
+            (query: string) => this._store.dispatch(heroActions.readHeroes({ payload: query }))
         );
     }
 

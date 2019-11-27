@@ -52,7 +52,14 @@ export class UpdateComponent implements OnInit, OnDestroy {
         );
 
         this._store.select(heroSelectors.isUpdateHeroSUCCESS).pipe(takeUntil(this.ngRxDestroy$)).subscribe(
-            (isSuccess: boolean) => isSuccess ? this._dialogRef.close() : null
+            (isSuccess: boolean) => {
+                if (isSuccess) {
+                    this._store.dispatch(heroActions.readHeroes({ payload: '' }));
+                    this._dialogRef.close(true);
+                }
+
+                return;
+            }
         );
     }
 
@@ -64,7 +71,7 @@ export class UpdateComponent implements OnInit, OnDestroy {
 
 
     goBackButtonClicked(): void {
-        this._dialogRef.close();
+        this._dialogRef.close(false);
     }
 
     updateHeroClicked(): void {

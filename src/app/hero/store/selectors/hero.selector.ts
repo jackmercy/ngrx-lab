@@ -24,7 +24,7 @@ export const isUpdateHeroSUCCESS = createSelector(
     (state: HeroState) => (state.prevAction === EHeroActions.updateHero && state.apiSuccess) ? true : null
 );
 
-// export const isDeleteHeroSUCCESS = createSelector(
-//     selectHeroState,
-//     (state: HeroState) => (state.prevAction === EHeroActions.deleteHero && state.apiSuccess) ? true : false
-// );
+export const isDeleteHeroSUCCESS = createSelector(
+    selectHeroState,
+    (state: HeroState) => (state.prevAction === EHeroActions.deleteHero && state.apiSuccess) ? true : null
+);

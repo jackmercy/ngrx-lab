@@ -6,17 +6,14 @@ export enum EHeroActions {
     createHeroSUCCESS = '[C] Create Hero SUCCESS',
     createHeroERROR = '[C] Create Hero ERROR',
 
-    readHeroes = '[R] Get heroes',
-    readHeroesSUCCESS = '[R] Get heroes SUCCESS',
+    readHeroes = '[R] Read hero(es)',
+    readHeroesSUCCESS = '[R] Read hero(es) SUCCESS',
 
     updateHero = '[U] Update hero details',
     updateHeroSUCCESS = '[U] Update hero details SUCCESS',
 
     deleteHero = '[D] Delete hero',
     deleteHeroSUCCESS = '[D] Delete hero SUCCESS',
-
-    searchHeroes = '[S] Search hero(es)',
-    searchHeroesSUCCESS = '[S] Search hero(es) SUCCESS',
 
     navigateToPage = '[Navigate] Go to target page',
     openUpdateHeroDialog = '[Dialog] Open update hero',
@@ -31,7 +28,7 @@ export const createHero = createAction(
 
 export const createHeroSUCCESS = createAction(
     EHeroActions.createHeroSUCCESS,
-    props<{ payload: any }>()
+    props<{ payload: IHero }>()
 );
 
 export const createHeroERROR = createAction(
@@ -41,14 +38,16 @@ export const createHeroERROR = createAction(
 
 //#endregion
 
-//#region Read Hero
-export const readHeroes = createAction(EHeroActions.readHeroes);
+//#region  READ heroes
+export const readHeroes = createAction(
+    EHeroActions.readHeroes,
+    props<{ payload: string}>()
+);
 
 export const readHeroesSUCCESS = createAction(
     EHeroActions.readHeroesSUCCESS,
     props<{ payload: IHero[] }>()
 );
-
 //#endregion
 
 //#region  Update Hero
@@ -76,18 +75,6 @@ export const deleteHeroSUCCESS = createAction(
 
 //#endregion
 
-
-//#region  Search heroes
-export const searchHeroes = createAction(
-    EHeroActions.searchHeroes,
-    props<{ payload: string }>()
-);
-
-export const searchHeroesSUCCESS = createAction(
-    EHeroActions.searchHeroesSUCCESS,
-    props<{ payload: IHero[] }>()
-);
-//#endregion
 
 export const navigateToPage = createAction(
     EHeroActions.navigateToPage,

@@ -29,21 +29,24 @@ export class HeroEffects {
         () => this._actions$.pipe(
             ofType(heroActions.createHero),
             mergeMap(action => this._heroService.createHero(action.payload).pipe(
-                map((res: any) => res ? heroActions.createHeroSUCCESS({ payload: res }) : null),
+                map((res: IHero) => res ? heroActions.createHeroSUCCESS({ payload: res }) : null),
                 catchError((error: any) => of(heroActions.createHeroERROR({ payload: error })))
             ))
         )
     );
 
-    readHero$ = createEffect(
-        () => this._actions$.pipe(
+    readHeroes$ = createEffect(
+        () => (
+            { debounce = 500 } = {}
+        ) => this._actions$.pipe(
             ofType(heroActions.readHeroes),
-            mergeMap(() => this._heroService.readHero().pipe(
-                map(
-                    (res: IHero[]) =>
-                        heroActions.readHeroesSUCCESS({ payload: res })
-                )
-            ))
+            debounceTime(debounce),
+            distinctUntilChanged(),
+            switchMap(action =>
+                this._heroService.readHeroes(action.payload).pipe(
+                    map((res: IHero[]) => heroActions.readHeroesSUCCESS({ payload: res })
+                    ))
+            ),
         )
     );
 
@@ -62,21 +65,6 @@ export class HeroEffects {
             mergeMap(action => this._heroService.deleteHero(action.payload).pipe(
                 map((res: any) => heroActions.deleteHeroSUCCESS({ payload: res }))
             ))
-        )
-    );
-
-    searchHeroes$ = createEffect(
-        () => (
-            { debounce = 500 } = {}
-        ) => this._actions$.pipe(
-            ofType(heroActions.searchHeroes),
-            debounceTime(debounce),
-            distinctUntilChanged(),
-            switchMap(action =>
-                this._heroService.searchHero(action.payload).pipe(
-                    map((res: IHero[]) => heroActions.searchHeroesSUCCESS({ payload: res })
-                    ))
-            ),
         )
     );
 

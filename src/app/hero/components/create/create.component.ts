@@ -24,21 +24,27 @@ export class CreateComponent implements OnInit, OnDestroy {
     constructor(
         private _formBuilder: FormBuilder,
         private _store: Store<State>
-    ) {
+    ) {}
+
+    ngOnInit() {
         this.createHeroForm = this._formBuilder.group({
             name: ['', Validators.required],
             power: ['', Validators.required],
             avatar: ['']
         });
-    }
 
-    ngOnInit() {
         this.avatar.valueChanges.pipe(takeUntil(this.ngRxDestroy$)).subscribe(
             imageSrc => imageSrc ? this.previewAvatar = imageSrc : this.previewAvatar = defaultAvatar
         );
 
         this._store.select(heroSelectors.isCreateHeroSUCCESS).pipe(takeUntil(this.ngRxDestroy$)).subscribe(
-            (isSuccess: boolean) => isSuccess ? this._store.dispatch(heroActions.navigateToPage({ payload: '/hero/list' })) : null
+            (isSuccess: boolean) => {
+                if (isSuccess) {
+                    this._store.dispatch(heroActions.navigateToPage({ payload: '/hero/list' }));
+                }
+
+                return;
+            }
         );
     }
 
