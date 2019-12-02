@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class HeroesComponent implements OnInit, OnDestroy {
     heroList: IHero[];
-    searchFormControl: FormControl = new FormControl('');;
+    searchFormControl: FormControl = new FormControl('');
     private ngRxDestroy$ = new Subject();
 
     constructor(
